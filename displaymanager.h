@@ -5,12 +5,20 @@
 #include <QDateTime>
 #include <QTimer>
 #include "targa.h"
+#include <linux/fb.h>
 
 class TargaImage {
-    WORD wWidthOfImage = 0;
-    WORD wHeightOfImage = 0;
-    WORD wDepthInBytes = 0;
-    BYTE *aImageData = NULL;
+public:
+    TargaImage() {
+        wWidthOfImage = 0;
+        wHeightOfImage = 0;
+        wDepthInBytes = 0;
+        aImageData = NULL;
+    }
+    WORD wWidthOfImage;
+    WORD wHeightOfImage;
+    WORD wDepthInBytes;
+    BYTE *aImageData;
 };
 
 class DisplayManager : public QObject
@@ -30,7 +38,7 @@ public slots:
 private:
    void drawAll();
    void drawCountdown();
-   void loadImgFromFile( TargaImage&, const char* );
+   void loadImgFromFile( TargaImage&, const QString& );
    void writeImageToFramebuffer(TargaImage&, int x, int y);
    QTimer m_clockTimer;
    bool m_bDndActive;
@@ -51,7 +59,9 @@ private:
    TargaImage m_imgDndEndTimeM;
    TargaImage m_aImgDndEndTimeNumbers[10];
 
-
+   bool m_bFbInitialized;
+   int m_fdFb;
+   struct fb_var_screeninfo m_screeninfo;
 };
 
 #endif // DISPLAYMANAGER_H
