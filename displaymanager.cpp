@@ -1,5 +1,15 @@
 #include "displaymanager.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <linux/fb.h>
+#include <unistd.h>
+#include <sys/mman.h>
+#include <sys/ioctl.h>
 #include <syslog.h>
+#include <math.h>
+
+
 #include "targa.h"
 
 DisplayManager::DisplayManager(QObject *parent) :
@@ -102,7 +112,7 @@ void DisplayManager::loadImgFromFile( TargaImage& img, const QString& strFileNam
     }
 }
 
-void DisplayManager::writeImageToFramebuffer(TargaImage&, int x, int y)
+void DisplayManager::writeImageToFramebuffer(TargaImage& img, int x, int y)
 {
     BYTE *aDeviceImage = NULL;
     BYTE *pPixelSource = NULL;
@@ -119,7 +129,7 @@ void DisplayManager::writeImageToFramebuffer(TargaImage&, int x, int y)
     aDeviceImage = (BYTE *)malloc(dwDestImageSize);
     if ( aDeviceImage == NULL ) {
        syslog(LOG_ERR, "[DisplayManager] could not allocate buffer for device dependent image");
-       return -1;
+       return;
     }
     memset(aDeviceImage, 0, dwDestImageSize);
 
@@ -130,10 +140,10 @@ void DisplayManager::writeImageToFramebuffer(TargaImage&, int x, int y)
        while ( lCurrentX < m_screeninfo.xres ) {
 
           // copy pixels if in bounds
-          if ( lCurrentX < wWidthOfImage && lCurrentY < wHeightOfImage ) {
+          if ( lCurrentX < img.wWidthOfImage && lCurrentY < img.wHeightOfImage ) {
 
              // get the source pixel
-             pPixelSource = &aImageData[(lCurrentX + (lCurrentY * wWidthOfImage)) * wDepthInBytes];
+             pPixelSource = &img.aImageData[(lCurrentX + (lCurrentY * img.wWidthOfImage)) * img.wDepthInBytes];
 
              // convert the source pixel to the target color format
              BYTE yRed   = ((DWORD)(pPixelSource[0]) >> (8 - m_screeninfo.red.length));
@@ -141,7 +151,7 @@ void DisplayManager::writeImageToFramebuffer(TargaImage&, int x, int y)
              BYTE yBlue  = ((DWORD)(pPixelSource[2]) >> (8 - m_screeninfo.blue.length));
              BYTE yAlpha = 0;
 
-             if ( wDepthInBytes > 3 ) {
+             if ( img.wDepthInBytes > 3 ) {
                 yAlpha = ((DWORD)(pPixelSource[3]) >> (8 - m_screeninfo.transp.length));
              }
 
@@ -168,7 +178,7 @@ void DisplayManager::writeImageToFramebuffer(TargaImage&, int x, int y)
     }
 
     // embed framebuffer into memory
-    unsigned char *pScreenData = (unsigned char*)mmap(0, dwDestImageSize, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    unsigned char *pScreenData = (unsigned char*)mmap(0, dwDestImageSize, PROT_READ | PROT_WRITE, MAP_SHARED, m_fdFb, 0);
 
     // copy data
     memcpy(pScreenData, aDeviceImage, dwDestImageSize);

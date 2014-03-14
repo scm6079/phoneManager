@@ -1,24 +1,31 @@
 #include "buttonmonitorthread.h"
 #include <unistd.h>
-#include <QTextStream>
+#include <syslog.h>
+
+
+#define PIFACE_HWADDR 0
 
 ButtonMonitorThread::ButtonMonitorThread(QObject *parent) :
     QThread(NULL)
 {
     moveToThread(this);
 
-    //m_bLastStateIncrement = false;
-    //m_bLastStateDecrement = false;
-    //m_bLastStateCancel = false;
-
     connect((QObject *)parent, SIGNAL(destroyed()), this, SLOT(quit()));
-    connect(this, SIGNAL(tryReading()), SLOT(onReadAttempt()), Qt::QueuedConnection);
 
+
+    debounceTimer.setInterval(20);
+    debounceTimer.setSingleShot(true);
+    connect(&debounceTimer, SIGNAL(timeout()), this, SLOT(onDebounce()));
+
+    pressTimer.setInterval(50);
+    pressTimer.setSingleShot(true);
+    connect(&pressTimer, SIGNAL(timeout()), this, SLOT(onReadAttempt()));
+    connect(this, SIGNAL(tryReading()), &pressTimer, SLOT(start()));
 }
 
 ButtonMonitorThread::~ButtonMonitorThread()
 {
-
+    pifacedigital_close(PIFACE_HWADDR);
 }
 
 void ButtonMonitorThread::run()
@@ -32,7 +39,14 @@ void ButtonMonitorThread::openButtons()
     for( int i=0; i < NUM_BUTTONS; i++ ) {
         m_aLastButtonState[i] = false;
     }
+
     // Open buttons here (connect to PiFace)
+    pifacedigital_open(PIFACE_HWADDR);
+
+    if( pifacedigital_enable_interrupts() ) {
+        qDebug("Could not enable interrupts.  Try running using sudo to enable PiFaceDigital interrupts.\n");
+        syslog(LOG_ERR, "[ButtonMonitorThread] Could not enable interrupts.");
+    }
 
     emit tryReading();
 }
@@ -43,28 +57,54 @@ void ButtonMonitorThread::setOutputState( int iOutput, bool bState )
     //TODO
 }
 
-void ButtonMonitorThread::onReadAttempt()
+void ButtonMonitorThread::splitInputs( uint8_t inputs ) 
 {
-    bool btns[8];
-    QTextStream qtin(stdin);
-    QString btn = qtin.read(1);
-    for( int i=0; i < 8; i++ ) btns[i] = m_aLastButtonState[i];
-    if( btn.compare("0") == 0 ) btns[0] = !m_aLastButtonState[0];
-    if( btn.compare("1") == 0 ) btns[1] = !m_aLastButtonState[1];
-    if( btn.compare("2") == 0 ) btns[2] = !m_aLastButtonState[2];
-    if( btn.compare("3") == 0 ) btns[3] = !m_aLastButtonState[3];
-    if( btn.compare("4") == 0 ) btns[4] = !m_aLastButtonState[4];
-    if( btn.compare("5") == 0 ) btns[5] = !m_aLastButtonState[5];
-    if( btn.compare("6") == 0 ) btns[6] = !m_aLastButtonState[6];
-    if( btn.compare("7") == 0 ) btns[7] = !m_aLastButtonState[7];
+    m_bCurrentButtonState[0] = !(inputs & 0x1);
+    m_bCurrentButtonState[1] = !(inputs & 0x2);
+    m_bCurrentButtonState[2] = !(inputs & 0x4);
+    m_bCurrentButtonState[3] = !(inputs & 0x8);
+    m_bCurrentButtonState[4] = !(inputs & 0x10);
+    m_bCurrentButtonState[5] = !(inputs & 0x20);
+    m_bCurrentButtonState[6] = !(inputs & 0x40);
+    m_bCurrentButtonState[7] = !(inputs & 0x80);
+}
+
+void ButtonMonitorThread::onDebounce()
+{
+    uint8_t inputs = pifacedigital_read_reg(0x13, PIFACE_HWADDR);
+    splitInputs( inputs );
+
+    qDebug("Debounced Inputs: 0x%x\n", inputs);
 
     for( int i=0; i < 8; i++ ) {
-        if( btns[i] != m_aLastButtonState[i] ) {
-            emit buttonChange( i, btns[i] );
+        if ( m_bNeedsDebounced[i] ) {
+            if( m_bCurrentButtonState[i] != m_aLastButtonState[i] ) {
+                m_aLastButtonState[i] = m_bCurrentButtonState[i];                
+                emit buttonChange(i, m_bCurrentButtonState[i]);
+            }
+
+            m_bNeedsDebounced[i] = false;
         }
-        m_aLastButtonState[i] = btns[i];
     }
 
     emit tryReading();
+}
+
+void ButtonMonitorThread::onReadAttempt()
+{
+    bool bDebounce = false;
+
+    uint8_t inputs = pifacedigital_read_reg(0x13, PIFACE_HWADDR);
+    splitInputs( inputs );
+
+    for( int i=0; i < 8; i++ ) {
+        if( m_bCurrentButtonState[i] != m_aLastButtonState[i] ) {
+            m_bNeedsDebounced[i] = true;
+            bDebounce = true;
+        }
+    }
+
+    if ( bDebounce ) debounceTimer.start();
+    else emit tryReading(); 
 }
 

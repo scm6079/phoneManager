@@ -26,3 +26,5 @@ HEADERS += \
     buttonmonitorthread.h \
     targa.h \
     displaymanager.h
+
+LIBS += -lpifacedigital -lmcp23s17
