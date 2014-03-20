@@ -5,7 +5,7 @@
 #include <QDateTime>
 #include <QTimer>
 #include "targa.h"
-#include <linux/fb.h>
+//#include <linux/fb.h>
 
 class TargaImage {
 public:
@@ -61,7 +61,7 @@ private:
 
    bool m_bFbInitialized;
    int m_fdFb;
-   struct fb_var_screeninfo m_screeninfo;
+   // struct fb_var_screeninfo m_screeninfo;
 };
 
 #endif // DISPLAYMANAGER_H

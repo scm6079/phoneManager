@@ -1,7 +1,7 @@
 #include "buttonmonitorthread.h"
 #include <unistd.h>
 #include <syslog.h>
-
+#include <stdint.h>
 
 #define PIFACE_HWADDR 0
 

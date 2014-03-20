@@ -1,30 +1,31 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2014-03-08T00:21:13
-#
-#-------------------------------------------------
 
-QT       += core
+QT       += core gui
 
-QT       -= gui
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = phoneManager
-CONFIG   += console
-CONFIG   -= app_bundle
-
 TEMPLATE = app
 
-
 SOURCES += main.cpp \
-    phonemanager.cpp \
-    buttonmonitorthread.cpp \
-    targa.cpp \
-    displaymanager.cpp
+           mainwindow.cpp \
+           phonemanager.cpp \
+           buttonmonitorthread.cpp \
+           targa.cpp \
+           displaymanager.cpp \
 
-HEADERS += \
-    phonemanager.h \
-    buttonmonitorthread.h \
-    targa.h \
-    displaymanager.h
+HEADERS  += mainwindow.h \
+            phonemanager.h \
+            buttonmonitorthread.h \
+            targa.h \
+            displaymanager.h
+
+FORMS    += mainwindow.ui
 
 LIBS += -lpifacedigital -lmcp23s17
+
+macx {
+    SOURCES += mockpiface/pifacedigital.c
+    HEADERS += mockpiface/pifacedigital.h
+    LIBS -= -lpifacedigital -lmcp23s17
+    INCLUDEPATH += mockpiface
+}

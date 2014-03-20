@@ -1,4 +1,5 @@
 #include "displaymanager.h"
+/*
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -6,6 +7,7 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <sys/ioctl.h>
+*/
 #include <syslog.h>
 #include <math.h>
 
@@ -39,6 +41,7 @@ DisplayManager::DisplayManager(QObject *parent) :
 
     m_bFbInitialized = false;
     //open framebuffer device and read out info
+    /*
     m_fdFb = open("/dev/fb0",O_RDWR);
     if( m_fdFb ) {
         m_bFbInitialized = true;
@@ -48,6 +51,7 @@ DisplayManager::DisplayManager(QObject *parent) :
            m_bFbInitialized = false;
         }
     }
+    */
 }
 
 void DisplayManager::setDndStatus( bool bEnabled )
@@ -113,7 +117,8 @@ void DisplayManager::loadImgFromFile( TargaImage& img, const QString& strFileNam
 }
 
 void DisplayManager::writeImageToFramebuffer(TargaImage& img, int x, int y)
-{
+{/*
+
     BYTE *aDeviceImage = NULL;
     BYTE *pPixelSource = NULL;
     BYTE *pPixelDestination = NULL;
@@ -188,4 +193,5 @@ void DisplayManager::writeImageToFramebuffer(TargaImage& img, int x, int y)
 
     // free source data
     free(aDeviceImage);
+    */
 }
