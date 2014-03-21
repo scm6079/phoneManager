@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "phoneManager.h"
+#include "phonemanager.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
