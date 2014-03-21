@@ -1,1 +1,6 @@
-<RCC/>
+<RCC>
+    <qresource prefix="/">
+        <file>resources/ringeroff.png</file>
+        <file>resources/ringeron.png</file>
+    </qresource>
+</RCC>

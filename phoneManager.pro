@@ -29,3 +29,10 @@ macx {
     LIBS -= -lpifacedigital -lmcp23s17
     INCLUDEPATH += mockpiface
 }
+
+OTHER_FILES += \
+    resources/ringeroff.png \
+    resources/ringeron.png
+
+RESOURCES += \
+    phoneManager.qrc

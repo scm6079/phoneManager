@@ -1,24 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow" >
-  <property name="geometry" >
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>320</width>
+    <height>240</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QMenuBar" name="menuBar" />
-  <widget class="QToolBar" name="mainToolBar" />
-  <widget class="QWidget" name="centralWidget" />
-  <widget class="QStatusBar" name="statusBar" />
+  <property name="styleSheet">
+   <string notr="true">background:#000000;</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QLabel" name="lastCallLabel">
+    <property name="geometry">
+     <rect>
+      <x>18</x>
+      <y>152</y>
+      <width>291</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Fira Mono OT</family>
+      <pointsize>22</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color:#88a5cf;</string>
+    </property>
+    <property name="text">
+     <string>Last Call @12:00am</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="phoneNumber">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>182</y>
+      <width>321</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Fira Mono OT</family>
+      <pointsize>38</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color:#ffffff;</string>
+    </property>
+    <property name="text">
+     <string>(480)641-1290</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="countdown">
+    <property name="geometry">
+     <rect>
+      <x>121</x>
+      <y>26</y>
+      <width>191</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Fira Mono OT</family>
+      <pointsize>74</pointsize>
+     </font>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color:#de0000;</string>
+    </property>
+    <property name="text">
+     <string>0:25</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="untilLabel">
+    <property name="geometry">
+     <rect>
+      <x>126</x>
+      <y>88</y>
+      <width>181</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Fira Mono OT</family>
+      <pointsize>22</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color:#de0000;</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="ringerOff">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>20</y>
+      <width>320</width>
+      <height>100</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap resource="phoneManager.qrc">:/resources/ringeroff.png</pixmap>
+    </property>
+   </widget>
+   <widget class="QLabel" name="ringerOn">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>20</y>
+      <width>320</width>
+      <height>100</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap resource="phoneManager.qrc">:/resources/ringeron.png</pixmap>
+    </property>
+   </widget>
+   <zorder>ringerOn</zorder>
+   <zorder>ringerOff</zorder>
+   <zorder>lastCallLabel</zorder>
+   <zorder>phoneNumber</zorder>
+   <zorder>countdown</zorder>
+   <zorder>untilLabel</zorder>
+  </widget>
  </widget>
- <layoutDefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
- <resources/>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources>
+  <include location="phoneManager.qrc"/>
+ </resources>
  <connections/>
 </ui>

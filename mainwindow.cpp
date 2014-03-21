@@ -6,9 +6,20 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    m_phoneManager = new PhoneManager(this);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+
+/*
+countdown
+lastCallLabel
+phoneNumber
+ringerOff
+ringerOn
+untilLabel
+*/
