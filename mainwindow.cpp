@@ -1,12 +1,19 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "phoneManager.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    m_phoneManager = new PhoneManager(this);
+
+    setRinger(true);
+    setUntil("");
+    setCountdown("");
+    setLastCall("", "");
+
+    m_phoneManager = new PhoneManager(this, this);
 }
 
 MainWindow::~MainWindow()
@@ -14,12 +21,38 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::setRinger(bool bOn)
+{
+    qDebug("set Ringer!");
+    if(bOn) {
+        ui->lblRingerOff->hide();
+        ui->lblCountdown->hide();
+        ui->lblUntilLabel->hide();
+        ui->lblRingerOn->show();
+    }
+    else {
+        ui->lblRingerOn->hide();
+        ui->lblRingerOff->show();
+        ui->lblCountdown->show();
+        ui->lblUntilLabel->show();
+    }
+}
 
-/*
-countdown
-lastCallLabel
-phoneNumber
-ringerOff
-ringerOn
-untilLabel
-*/
+void MainWindow::setUntil(QString txt)
+{
+    qDebug("set Until!");
+    ui->lblUntilLabel->setText(txt);
+}
+
+void MainWindow::setCountdown(QString txt)
+{
+    qDebug("set Countdown!");
+    ui->lblUntilLabel->setText(txt);
+}
+
+void MainWindow::setLastCall(QString txtWho, QString txtWhen)
+{
+    ui->lblLastCallLabel->setText(txtWhen);
+    ui->lblPhoneNumber->setText(txtWho);
+}
+

@@ -2,11 +2,12 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "phoneManager.h"
 
 namespace Ui {
 class MainWindow;
 }
+
+class PhoneManager;
 
 class MainWindow : public QMainWindow
 {
@@ -15,6 +16,12 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+public slots:
+    void setRinger(bool);
+    void setUntil(QString);
+    void setCountdown(QString);
+    void setLastCall(QString, QString);
 
 protected:
 

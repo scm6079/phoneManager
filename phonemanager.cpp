@@ -8,7 +8,7 @@
 #define REPEAT_INTERVAL   1000
 
 
-PhoneManager::PhoneManager(QObject *parent) :
+PhoneManager::PhoneManager(QObject *parent, MainWindow *pMainWindow) :
     QObject(parent)
 {
     m_pButtonMonitorThread = new ButtonMonitorThread(this);
@@ -31,6 +31,11 @@ PhoneManager::PhoneManager(QObject *parent) :
     m_pDisplayManager = new DisplayManager(this);
     connect(this, SIGNAL(dndStatus(bool)), m_pDisplayManager, SLOT(setDndStatus(bool)));
     connect(this, SIGNAL(dndEndTime(QDateTime)), m_pDisplayManager, SLOT(setDndEndTime(QDateTime)));
+
+    connect( m_pDisplayManager, SIGNAL(ringEnabledChanged(bool)), pMainWindow, SLOT(setRinger(bool)) );
+    connect( m_pDisplayManager, SIGNAL(untilChanged(QString)), pMainWindow, SLOT(setUntil(QString)) );
+    connect( m_pDisplayManager, SIGNAL(countdownChanged(QString)), pMainWindow, SLOT(setCountdown(QString)) );
+    connect( m_pDisplayManager, SIGNAL(lastCallChanged(QString, QString)), pMainWindow, SLOT(setLastCall(QString, QString)) );
 
     m_pButtonMonitorThread->start();
 

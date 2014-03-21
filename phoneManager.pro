@@ -28,6 +28,7 @@ macx {
     HEADERS += mockpiface/pifacedigital.h
     LIBS -= -lpifacedigital -lmcp23s17
     INCLUDEPATH += mockpiface
+    DEFINES += NO_FULLSCREEN
 }
 
 OTHER_FILES += \

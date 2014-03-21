@@ -6,12 +6,13 @@
 #include <QTimer>
 #include "buttonmonitorthread.h"
 #include "displaymanager.h"
+#include "mainwindow.h"
 
 class PhoneManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit PhoneManager(QObject *parent = 0);
+    explicit PhoneManager(QObject *parent = 0, MainWindow *pMainWindow=0);
     virtual ~PhoneManager();
 
 signals:

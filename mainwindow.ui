@@ -17,7 +17,7 @@
    <string notr="true">background:#000000;</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QLabel" name="lastCallLabel">
+   <widget class="QLabel" name="lblLastCallLabel">
     <property name="geometry">
      <rect>
       <x>18</x>
@@ -39,7 +39,7 @@
      <string>Last Call @12:00am</string>
     </property>
    </widget>
-   <widget class="QLabel" name="phoneNumber">
+   <widget class="QLabel" name="lblPhoneNumber">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -64,7 +64,7 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="countdown">
+   <widget class="QLabel" name="lblCountdown">
     <property name="geometry">
      <rect>
       <x>121</x>
@@ -92,7 +92,7 @@
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="untilLabel">
+   <widget class="QLabel" name="lblUntilLabel">
     <property name="geometry">
      <rect>
       <x>126</x>
@@ -111,13 +111,16 @@
      <string notr="true">color:#de0000;</string>
     </property>
     <property name="text">
-     <string/>
+     <string>Until 10:10pm</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="ringerOff">
+   <widget class="QLabel" name="lblRingerOff">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -133,7 +136,7 @@
      <pixmap resource="phoneManager.qrc">:/resources/ringeroff.png</pixmap>
     </property>
    </widget>
-   <widget class="QLabel" name="ringerOn">
+   <widget class="QLabel" name="lblRingerOn">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -149,12 +152,12 @@
      <pixmap resource="phoneManager.qrc">:/resources/ringeron.png</pixmap>
     </property>
    </widget>
-   <zorder>ringerOn</zorder>
-   <zorder>ringerOff</zorder>
-   <zorder>lastCallLabel</zorder>
-   <zorder>phoneNumber</zorder>
-   <zorder>countdown</zorder>
-   <zorder>untilLabel</zorder>
+   <zorder>lblRingerOn</zorder>
+   <zorder>lblRingerOff</zorder>
+   <zorder>lblLastCallLabel</zorder>
+   <zorder>lblPhoneNumber</zorder>
+   <zorder>lblCountdown</zorder>
+   <zorder>lblUntilLabel</zorder>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
