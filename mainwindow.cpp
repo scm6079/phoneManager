@@ -47,7 +47,7 @@ void MainWindow::setUntil(QString txt)
 void MainWindow::setCountdown(QString txt)
 {
     qDebug("set Countdown!");
-    ui->lblUntilLabel->setText(txt);
+    ui->lblCountdown->setText(txt);
 }
 
 void MainWindow::setLastCall(QString txtWho, QString txtWhen)

@@ -65,7 +65,7 @@ void DisplayManager::drawAll()
 
 void DisplayManager::drawCountdown()
 {
-    QString strCountdown = QString("%1:%2").arg(m_iCountDownHours).arg(m_iCountDownMinutes);
+    QString strCountdown = QString("%1:%2").arg(m_iCountDownHours).arg(m_iCountDownMinutes, 2, 10, QChar('0') );
     emit countdownChanged(strCountdown);
     qDebug(strCountdown.toAscii());
     m_bCountdownDirty = false;
