@@ -195,7 +195,6 @@ void PhoneManager::displayCall(const NcidClient::CallInfo call)
 void PhoneManager::loggedCall(const NcidClient::CallInfo call)
 {
     if( !m_callReported ) {
-       m_callReported = true;
        displayCall( call );
     }
 }
@@ -204,6 +203,7 @@ void PhoneManager::incomingCall(const NcidClient::CallInfo call)
 {
     // TODO: Determine if caller should trigger phone ring through with double call within time-period
 
+    m_callReported = true;
     displayCall( call );
 }
 
