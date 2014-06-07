@@ -4,9 +4,11 @@
 #include <QObject>
 #include <QDateTime>
 #include <QTimer>
+#include <QSettings>
 #include "buttonmonitorthread.h"
 #include "displaymanager.h"
 #include "mainwindow.h"
+#include "ncidclient.h"
 
 class PhoneManager : public QObject
 {
@@ -19,6 +21,7 @@ signals:
     void setOutputState( int iOutput, bool bState );
     void dndStatus( bool bEnabled );
     void dndEndTime( QDateTime endTime );
+    void lastCallChanged(QString, QString, QString);
 
 public slots:
     void onButtonChange(int iBtn, bool bState);
@@ -27,9 +30,17 @@ public slots:
     void onCancelDnd();
     void onClockTick();
 
+private slots:
+    void loadConfiguration();
+    void loggedCall(NcidClient::CallInfo);
+    void incomingCall(const NcidClient::CallInfo);
+    void ncidServerConnected(bool);
+    void displayCall(const NcidClient::CallInfo);
+
 private:
     void enableDnd();
     void disableDnd();
+    void connectToNcidServer();
 
     bool m_bDndActive;
     int  m_iConsecutiveDecrement;
@@ -40,6 +51,13 @@ private:
     QTimer m_btnDecrementTimer;
     ButtonMonitorThread *m_pButtonMonitorThread;
     DisplayManager *m_pDisplayManager;
+
+    QSettings *m_settings;
+    NcidClient *m_ncidClient;
+    QString m_ncidHostIP;
+    int m_ncidHostPort;
+    bool m_connected;
+    bool m_callReported;
 };
 
 #endif // PHONEMANAGER_H

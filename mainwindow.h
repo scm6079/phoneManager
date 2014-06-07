@@ -21,7 +21,7 @@ public slots:
     void setRinger(bool);
     void setUntil(QString);
     void setCountdown(QString);
-    void setLastCall(QString, QString);
+    void setLastCall(QString, QString, QString);
 
 protected:
 

@@ -18,7 +18,6 @@ signals:
     void ringEnabledChanged(bool);
     void untilChanged(QString);
     void countdownChanged(QString);
-    void lastCallChanged(QString, QString);
 
 public slots:
    void setDndStatus( bool bEnabled );

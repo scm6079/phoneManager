@@ -1,5 +1,5 @@
 
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -12,12 +12,14 @@ SOURCES += main.cpp \
            buttonmonitorthread.cpp \
            targa.cpp \
            displaymanager.cpp \
+           ncidclient.cpp
 
 HEADERS  += mainwindow.h \
             phonemanager.h \
             buttonmonitorthread.h \
             targa.h \
-            displaymanager.h
+            displaymanager.h \
+            ncidclient.h
 
 FORMS    += mainwindow.ui
 

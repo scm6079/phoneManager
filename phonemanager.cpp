@@ -11,6 +11,12 @@
 PhoneManager::PhoneManager(QObject *parent, MainWindow *pMainWindow) :
     QObject(parent)
 {
+    m_ncidClient = NULL;
+    m_connected = false;
+    m_settings = new QSettings;
+    loadConfiguration();
+    m_callReported = false;
+
     m_pButtonMonitorThread = new ButtonMonitorThread(this);
     connect(m_pButtonMonitorThread, SIGNAL(buttonChange(int,bool)), this, SLOT(onButtonChange(int,bool)));
     connect(this, SIGNAL(setOutputState(int,bool)), m_pButtonMonitorThread, SLOT(setOutputState(int,bool)));
@@ -35,11 +41,12 @@ PhoneManager::PhoneManager(QObject *parent, MainWindow *pMainWindow) :
     connect( m_pDisplayManager, SIGNAL(ringEnabledChanged(bool)), pMainWindow, SLOT(setRinger(bool)) );
     connect( m_pDisplayManager, SIGNAL(untilChanged(QString)), pMainWindow, SLOT(setUntil(QString)) );
     connect( m_pDisplayManager, SIGNAL(countdownChanged(QString)), pMainWindow, SLOT(setCountdown(QString)) );
-    connect( m_pDisplayManager, SIGNAL(lastCallChanged(QString, QString)), pMainWindow, SLOT(setLastCall(QString, QString)) );
+    connect( this, SIGNAL(lastCallChanged(QString, QString, QString)), pMainWindow, SLOT(setLastCall(QString, QString, QString)) );
 
     m_pButtonMonitorThread->start();
 
     disableDnd();
+    connectToNcidServer();
 }
 
 PhoneManager::~PhoneManager()
@@ -47,6 +54,9 @@ PhoneManager::~PhoneManager()
     if (m_pButtonMonitorThread) {
        delete m_pButtonMonitorThread;
        m_pButtonMonitorThread = NULL;
+    }
+    if (m_ncidClient && m_ncidClient->isOpen()) {
+        m_ncidClient->close();
     }
 }
 
@@ -138,4 +148,63 @@ void PhoneManager::onClockTick()
         }
     }
 }
+
+void PhoneManager::loadConfiguration()
+{
+    m_ncidHostIP = m_settings->value("ncidserver/ip","127.0.0.1").toString();
+    m_ncidHostPort = m_settings->value("ncidserver/port",3333).toInt();
+}
+
+void PhoneManager::ncidServerConnected(bool c)
+{
+    m_connected = c;
+}
+
+void PhoneManager::connectToNcidServer()
+{
+    if (m_ncidClient) {
+        m_ncidClient->close();
+        m_ncidClient->deleteLater();
+        m_connected = false;
+    }
+
+    m_ncidClient = new NcidClient;
+    m_ncidClient->connectToHost (m_ncidHostIP, m_ncidHostPort, QIODevice::ReadOnly );
+    connect(m_ncidClient, SIGNAL(newCallInfo(NcidClient::CallInfo)), this, SLOT(loggedCall(NcidClient::CallInfo)));
+    connect(m_ncidClient, SIGNAL(incomingCall(NcidClient::CallInfo)), this, SLOT(incomingCall(NcidClient::CallInfo)));
+
+    if (!m_ncidClient->waitForConnected(1000)) {
+        qDebug() << "NCID Client Connection Error";
+        m_ncidClient->deleteLater();
+    }
+}
+
+void PhoneManager::displayCall(const NcidClient::CallInfo call)
+{
+   QString phone = call.phoneNmbr;
+   if( phone.length() == 10 ) {
+      phone.insert(6, QChar('-'));
+      phone.insert(3, QChar(' '));
+      phone.insert(3, QChar(')'));
+      phone.insert(0, QChar('('));
+   }
+
+   emit lastCallChanged(call.name, phone, QString("Last Call %1").arg(call.date.toString(QString("ddd h:mmap"))));
+}
+
+void PhoneManager::loggedCall(const NcidClient::CallInfo call)
+{
+    if( !m_callReported ) {
+       m_callReported = true;
+       displayCall( call );
+    }
+}
+
+void PhoneManager::incomingCall(const NcidClient::CallInfo call)
+{
+    // TODO: Determine if caller should trigger phone ring through with double call within time-period
+
+    displayCall( call );
+}
+
 

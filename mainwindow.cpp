@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setRinger(true);
     setUntil("");
     setCountdown("");
-    setLastCall("", "");
+    setLastCall("", "", "");
 
     m_phoneManager = new PhoneManager(this, this);
 }
@@ -50,9 +50,10 @@ void MainWindow::setCountdown(QString txt)
     ui->lblCountdown->setText(txt);
 }
 
-void MainWindow::setLastCall(QString txtWho, QString txtWhen)
+void MainWindow::setLastCall(QString txtWho, QString txtNumber, QString txtWhen)
 {
+    ui->lblCallerName->setText(txtWho);
+    ui->lblPhoneNumber->setText(txtNumber);
     ui->lblLastCallLabel->setText(txtWhen);
-    ui->lblPhoneNumber->setText(txtWho);
 }
 

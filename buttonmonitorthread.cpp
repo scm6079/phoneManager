@@ -54,7 +54,7 @@ void ButtonMonitorThread::openButtons()
 void ButtonMonitorThread::setOutputState( int iOutput, bool bState )
 {
     qDebug("Setting output %d to %d", iOutput, (int)bState);
-    //TODO
+    pifacedigital_digital_write(iOutput, bState);
 }
 
 void ButtonMonitorThread::splitInputs( uint8_t inputs ) 
