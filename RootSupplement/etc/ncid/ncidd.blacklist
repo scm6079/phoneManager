@@ -1,0 +1,69 @@
+# ncidd.hangup blacklist file
+
+# File last changed: Thu Feb 7, 2013
+
+# This file contains the names and numbers of telephone calls to
+# be terminated automatically using the hangup option.
+
+###############################
+# Definitions and Line format #
+###############################
+
+# The number must exactly match the number in the cidcall.log file.
+# It will show if a leading 1 is needed for US numbers.
+
+# Types of lines: blank, comment, or expression
+# Comment lines and blank lines are ignored.
+
+# A non-comment line is divided into expressions, separated by spaces.
+# An expression is either a string of non-blank characters or
+# everything between double quotes.  Multiple expressions on a
+# line is permitted.  Anything after a '#' on a line is a comment.
+
+#########
+# NOTES #
+#########
+
+#    - Each expression is compared to the caller name and number.
+#    - A '^' at the beginning an expression means it must match
+#      at the start of a name or number
+#    - Upper and lower case letters are significant.
+#    - A partial name or number can match.
+#    - A leading '1' is required if it is in /dev/log/cidcall.log
+#    - If an expression is longer than the name or number, it
+#      will never match.
+
+#############
+#  EXAMPLES #
+#############
+
+#    blacklist the entire 999 areacode (if no leading 1 needed): ^999
+#    blacklist the entire 999 areacode (if leading 1 needed): ^1999
+#    blacklist the entire 999 areacode (with/without leading 1): ^ 999 ^1999
+#    blacklist "BAD MARKETING": "BAD MARKETING"
+#    blacklist anything with "MARKETING" in the name: MARKETING
+#    blacklist name and number on one line: Ogre 13215551212
+#    blacklist a specific number ^5551231234
+
+###################
+# DEFAULT ENTRIES #
+###################
+
+#   PRIVATE - normally not wanted if Caller ID is blocked
+#   999 - spoofing see http://wiki.answers.com/Q/Which_city_has_area_code_999
+#   876 - expensive see http://www.fcc.gov/guides/calls-809-649-284-area-codes
+#   809 - expensive see http://www.fcc.gov/guides/calls-809-649-284-area-codes
+#   649 - expensive see http://www.fcc.gov/guides/calls-809-649-284-area-codes
+#   284 - expensive see http://www.fcc.gov/guides/calls-809-649-284-area-codes
+
+PRIVATE              # do not want these calls in most cases
+^999    ^1999        # unassigned and used for spoofing calls
+^876    ^1876        # expensive international call scam
+^809    ^1809        # expensive international call scam
+^649    ^1649        # expensive international call scam
+^284    ^1284        # expensive international call scam
+
+########################
+# Add Expressions here #
+########################
+
